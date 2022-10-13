@@ -105,15 +105,19 @@ function TaskVC(name = "Task", id = "#tasks") {
   };
 
   TaskVC.prototype.switchController = function(id) {
-
+    let task = this.task_model.get(id);
+    this.task_model.update(id, task.title, !task.done); 
+    this.listController(); 
   };
 
   TaskVC.prototype.deleteController = function(id) {
-
+    this.task_model.delete(id);
+    this.listController(); 
   };
 
   TaskVC.prototype.resetController = function() {
-
+    this.task_model.reset();
+    this.listController();
   };
 
 
