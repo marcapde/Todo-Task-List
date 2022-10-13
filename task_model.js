@@ -17,16 +17,16 @@ function TaskModel(name = "tasks") {
   }
   ];
 
-  this.tasks = JSON.parse(JSON.stringify(this.initial_tasks));
+  localStorage[this.name] = localStorage[this.name] || JSON.stringify(this.initial_tasks);
 
   /* Returns the number of elements that meet the conditions (where)
      where:  Object with conditions to filter the elements. Example:
              {a: 3, b: ['<', 5], c: ['includes', "A"]} computes a===3 && b<5 && c.includes("A") */
   TaskModel.prototype.count = function(where = {}) {
     if (Object.keys(where).length === 0)
-      return this.tasks.length;
+      return JSON.parse(localStorage[this.name]).length;
     else {
-      let tasks = this.tasks.filter(e => {
+      let tasks = JSON.parse(localStorage[this.name]).filter(e => {
         for (let f in where) {
           let ok = false;
           if (where[f] instanceof Array) {
@@ -71,7 +71,7 @@ function TaskModel(name = "tasks") {
      offset: First elements to bypass. 0 to start by the first.
      limit:  Number of elements to return. 0 to reach the last. */
   TaskModel.prototype.getAll = function(where = {}, order = {}, offset = 0, limit = 0) {
-    let tasks = this.tasks;
+    let tasks = JSON.parse(localStorage[this.name]);
     tasks.map((e, i) => e.id = i);
     tasks = tasks.filter(e => {
       for (let f in where) {
@@ -125,7 +125,7 @@ function TaskModel(name = "tasks") {
   /* Returns the element identified by (id).
      id: Element identification. */
   TaskModel.prototype.get = function(id) {
-    const task = this.tasks[id];
+    const task = JSON.parse(localStorage[this.name])[id];
     if (typeof task === "undefined") {
       throw new Error(`The value of id parameter is not valid.`);
     } else {
@@ -137,10 +137,12 @@ function TaskModel(name = "tasks") {
      title: String with the task title.
      done: Boolean explaining if the task is done or not. */
   TaskModel.prototype.create = function(title, done = false) {
-    this.tasks.push({
+    let tasks=JSON.parse(localStorage[this.name]);
+    tasks.push({
       title: (title || "").trim(),
       done
     });
+    localStorage[this.name] = JSON.stringify(tasks)
   };
 
   /* Updates the element identified by (id).
@@ -148,29 +150,34 @@ function TaskModel(name = "tasks") {
      title: String with the task title.
      done: Boolean explaining if the task is done or not. */
   TaskModel.prototype.update = function(id, title, done) {
-    if (typeof this.tasks[id] === "undefined") {
+    let tasks = JSON.parse(localStorage[this.name]);
+    if (typeof tasks[id] === "undefined") {
       throw new Error(`The value of id parameter is not valid.`);
     } else {
-      this.tasks.splice(id, 1, {
+      tasks.splice(id, 1, {
         title: (title || "").trim(),
         done
       });
     }
+    localStorage[this.name] =JSON.stringify(tasks);
   };
 
   /* Deletes the element identified by (id).
      id: Element identification. */
-  TaskModel.prototype.delete = function(id) {
-    if (typeof this.tasks[id] === "undefined") {
+  TaskModel.prototype.deletes = function(id) {
+    let tasks = JSON.parse(localStorage[this.name]);
+
+    if (typeof tasks[id] === "undefined") {
       throw new Error(`The value of id parameter is not valid.`);
     } else {
-      this.tasks.splice(id, 1);
+      tasks.splice(id, 1);
     }
+    localStorage[this.name] = JSON.stringify(tasks);
   };
 
   // Resets the element list to the initial values
   TaskModel.prototype.reset = function() {
-    this.tasks = JSON.parse(JSON.stringify(this.initial_tasks));
+    localStorage[this.name] = JSON.stringify(this.initial_tasks);
   };
 
 }
