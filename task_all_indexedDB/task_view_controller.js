@@ -118,15 +118,29 @@ function TaskVC(name = "Task", id = "#tasks") {
   };
 
   TaskVC.prototype.switchController = function(id) {
+    let data = this.task_model.get(id)
+    .then((data) => {
+      this.task_model.update(id,data.title,!data.done);
+      this.listController();
 
+    })
+    .catch(error => {throw error;});
   };
 
   TaskVC.prototype.deleteController = function(id) {
-
+    this.task_model.delete(id)
+    .then(() => {
+      this.listController();
+    })
+    .catch(error => {throw error;});
   };
 
   TaskVC.prototype.resetController = function() {
-
+    this.task_model.reset()
+      .then(() => {
+      this.listController();
+    })
+    .catch(error => {throw error;});
   };
 
 
