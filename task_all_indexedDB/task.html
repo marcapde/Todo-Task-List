@@ -7,11 +7,21 @@
     .nobr {white-space: nowrap;}
   </style>
   <link rel="stylesheet" href="lib/simplePagination.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
 </head>
 
 <body>
-  <div id="tasks"></div>
-  <div id="home_tasks"></div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md" id="tasks"></div>
+      <div class="col-md" id="home_tasks"></div>
+      <div class="col-md" id="uni_tasks"></div>
+    </div>
+    
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="lib/cookie.js"></script>
   <script src="lib/simplePagination.js"></script>

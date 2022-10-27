@@ -13,28 +13,38 @@ function TaskVC(name = "Task", id = "#tasks") {
   // VIEWs
 
   TaskVC.prototype.taskList = function(tasks) {
-    return `<h1>${this.name} list</h1>
-    <span class="nobr" style="float:left;">Items/page <select name="itemsOnPage" class="iopage"><option value="5">5</option><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select>
-    Pagination: </span><div class="pagination"></div>
-    <button class="new">New task</button>
-    <button class="reset">Reset tasks</button>
-    <button class="list_a"></button>
-    <p/>
-    Task Title
-    <button class="uporder" title="Up order">&blacktriangle;</button>
-    <button class="doorder" title="Down order">&blacktriangledown;</button>
-    <button class="noorder" title="No order">&blacklozenge;</button>
-    <span class="nobr"><input type="text" class="search" value="${this.search}" placeholder="Search" onfocus="let v=this.value; this.value=''; this.value=v"> <img class="dsearch" title="Clean Search" src="public/icon_delete.png"/></span>
-    ` +
+    return `
+    <div class="card">
+      <div class="card-header d-grip gap-2">
+        <button type="button" data-bs-toggle="collapse" data-bs-target="${this.id} .tlist" class="btn btn-secondary btn-block">${this.name} list</button>
+      </div>
+      <div class="collapse show" id="${this.id}">
+        <div class="card-body">
+          <span class="nobr" style="float:left;">Items/page <select name="itemsOnPage" class="iopage"><option value="5">5</option><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select>
+          Pagination: </span><div class="pagination"></div>
+          <div class="btn-group">
+            <button class="new btn btn-success">New task</button>
+            <button class="reset btn btn-danger">Reset tasks</button>
+            <button class="list_a btn btn-secondary"></button>
+          </div>
+          <p/>
+          Task Title
+          <button class="uporder" title="Up order">&blacktriangle;</button>
+          <button class="doorder" title="Down order">&blacktriangledown;</button>
+          <button class="noorder" title="No order">&blacklozenge;</button>
+          <span class="nobr"><input type="text" class="search" value="${this.search}" placeholder="Search" onfocus="let v=this.value; this.value=''; this.value=v"> <img class="dsearch" title="Clean Search" src="public/icon_delete.png"/></span>
+      ` +
     tasks.reduce(
       (ac, task) => ac += 
-      `<div>
+      `<div class="tlist">
       <button type="submit" class="delete" taskid="${task.id}" title="Delete"> <img src="public/icon_delete.png"/> </button>
       <button type="button" class="edit"   taskid="${task.id}" title="Edit"  > <img src="public/icon_edit.png"/> </button>
       <button type="button" class="switch" taskid="${task.id}" title=${task.done ? 'Start' : 'Stop'}> <img src="${task.done ? 'public/icon_play.png' : 'public/icon_stop.png'}"/> </button>
       ${task.title}
-      </div>\n`, 
-      "");
+      </div>\n
+      ` ,    
+      "") + `</div></div>` ;
+      
   };
 
   TaskVC.prototype.taskForm = function(msg, id, action, title, done) {
@@ -176,4 +186,5 @@ function TaskVC(name = "Task", id = "#tasks") {
 // Creation of an object View-Controller for the tasks
 let task_vc = new TaskVC();
 let task_vch = new TaskVC('Home task', '#home_tasks');
+let task_vcu = new TaskVC('Univerity task', '#uni_tasks');
 });
