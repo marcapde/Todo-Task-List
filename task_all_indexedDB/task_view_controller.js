@@ -4,22 +4,46 @@ $(function() {
 function TaskVC(name = "Task", id = "#tasks") {
   this.name = name;
   this.id = id;
-  this.active = Cookie.get("active") ? JSON.parse(Cookie.get("active")) : false;
-  this.search = Cookie.get("search") ? JSON.parse(Cookie.get("search")) : "";
-  this.order  = Cookie.get("order")  ? JSON.parse(Cookie.get("order"))  : {};
-  this.itemsOnPage = Cookie.get("itemsOnPage") ? JSON.parse(Cookie.get("itemsOnPage")) : 10;
+  this.active = Cookie.get(`active${this.id.substring(1)}`) ? JSON.parse(Cookie.get(`active${this.id.substring(1)}`)) : false;
+  this.search = Cookie.get(`search${this.id.substring(1)}`) ? JSON.parse(Cookie.get(`search${this.id.substring(1)}`)) : "";
+  this.order  = Cookie.get(`order${this.id.substring(1)}`)  ? JSON.parse(Cookie.get(`order${this.id.substring(1)}`))  : {};
+  this.itemsOnPage = Cookie.get(`itemsOnPage${this.id.substring(1)}`) ? JSON.parse(Cookie.get(`itemsOnPage${this.id.substring(1)}`)) : 10;
   this.currentPage = 1;
-
+  this.display = Cookie.get(`display${this.id.substring(1)}`) ? JSON.parse(Cookie.get(`display${this.id.substring(1)}`)) : "show";
+  this.displayMini = false;
   // VIEWs
+  TaskVC.prototype.changeDisplay = function() {
+    this.displayMini = !this.displayMini;
+    if (this.displayMini == true){ 
+      this.display = ""; // Cookie.get(cookieDisplayMini[`${this.id}`]) ? JSON.parse(Cookie.get(cookieDisplayMini[`${this.id}`])) : "";
+    }else{
+      this.display = Cookie.get(`display${this.id.substring(1)}`) ? JSON.parse(Cookie.get(`display${this.id.substring(1)}`)) : "show";
+    }    
+    this.listController();
+    return ;
+    
+
+  }
+  TaskVC.prototype.saveDisplay = function() {
+    //console.log("changing display")
+    this.display == "" ? this.display = "show" : this.display = ""; 
+    if(this.displayMini){   
+      Cookie.set(`display${this.id.substring(1)}`, JSON.stringify(this.display), 7);
+    }
+  }
 
   TaskVC.prototype.taskList = function(tasks) {
     return `
     <div class="card">
-      <div class="card-header d-grip gap-2">
-        <button type="button" data-bs-toggle="collapse" data-bs-target="${this.id} .tlist" class="btn btn-secondary btn-block">${this.name} list</button>
+      <div width="100%" class="card-header">
+        <button width="100%" id="collapse_btn"
+         class="btn btn-secondary btn-block w-100" 
+         type="button" data-bs-toggle="collapse" 
+         data-bs-target="#col-${this.id.substring(1)}" >${this.name} list
+        </button>        
       </div>
-      <div class="collapse show" id="${this.id}">
-        <div class="card-body">
+      <div class="collapse ${this.display}" id="col-${this.id.substring(1)}">
+        <div class="card-body" >
           <span class="nobr" style="float:left;">Items/page <select name="itemsOnPage" class="iopage"><option value="5">5</option><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select>
           Pagination: </span><div class="pagination"></div>
           <div class="btn-group">
@@ -29,21 +53,25 @@ function TaskVC(name = "Task", id = "#tasks") {
           </div>
           <p/>
           Task Title
-          <button class="uporder" title="Up order">&blacktriangle;</button>
-          <button class="doorder" title="Down order">&blacktriangledown;</button>
-          <button class="noorder" title="No order">&blacklozenge;</button>
-          <span class="nobr"><input type="text" class="search" value="${this.search}" placeholder="Search" onfocus="let v=this.value; this.value=''; this.value=v"> <img class="dsearch" title="Clean Search" src="public/icon_delete.png"/></span>
+          <button class="uporder btn btn-secondary" title="Up order">&blacktriangle;</button>
+          <button class="doorder btn btn-secondary" title="Down order">&blacktriangledown;</button>
+          <button class="noorder btn btn-secondary" title="No order">&blacklozenge;</button>
+          <span class="nobr"><input type="text" class="search form-control-sm " value="${this.search}" placeholder="Search" onfocus="let v=this.value; this.value=''; this.value=v"> <img class="dsearch" title="Clean Search" src="public/icon_delete.png"/></span>
+        
+      
       ` +
     tasks.reduce(
       (ac, task) => ac += 
-      `<div class="tlist">
-      <button type="submit" class="delete" taskid="${task.id}" title="Delete"> <img src="public/icon_delete.png"/> </button>
-      <button type="button" class="edit"   taskid="${task.id}" title="Edit"  > <img src="public/icon_edit.png"/> </button>
+      `<div class="tlist page-item">
+      <button type="submit " class="delete" taskid="${task.id}" title="Delete"> <img src="public/icon_delete.png"/> </button>
+      <button type="button " class="edit"   taskid="${task.id}" title="Edit"  > <img src="public/icon_edit.png"/> </button>
       <button type="button" class="switch" taskid="${task.id}" title=${task.done ? 'Start' : 'Stop'}> <img src="${task.done ? 'public/icon_play.png' : 'public/icon_stop.png'}"/> </button>
       ${task.title}
       </div>\n
       ` ,    
-      "") + `</div></div>` ;
+      "") 
+      +
+      `</div></div></div>` ;
       
   };
 
@@ -63,11 +91,13 @@ function TaskVC(name = "Task", id = "#tasks") {
   // CONTROLLERs
 
   TaskVC.prototype.listController = function() {
-    Cookie.set("active", JSON.stringify(this.active), 7);
-    Cookie.set("search", JSON.stringify(this.search), 7);
-    Cookie.set("order",  JSON.stringify(this.order),  7);
-    Cookie.set("itemsOnPage", JSON.stringify(this.itemsOnPage), 7);
-
+    Cookie.set(`active${this.id.substring(1)}`, JSON.stringify(this.active), 7);
+    Cookie.set(`search${this.id.substring(1).substring}`, JSON.stringify(this.search), 7);
+    Cookie.set(`order${this.id.substring(1)}`,  JSON.stringify(this.order),  7);
+    Cookie.set(`itemsOnPage${this.id.substring(1)}`, JSON.stringify(this.itemsOnPage), 7);
+    if(!this.displayMini){
+    Cookie.set(`display${this.id.substring(1)}`,  JSON.stringify(this.display),  7);
+    }
     let where = {};
     if (this.active)
       where.done = false;
@@ -168,6 +198,8 @@ function TaskVC(name = "Task", id = "#tasks") {
     $(document).on('click', this.id+' .reset',  (e)=> this.resetController());
     $(document).on('input', this.id+' .iopage', () => {this.itemsOnPage = Number($(this.id+' .iopage').val()); this.currentPage = 1; this.listController();});
     $(document).on('input', this.id+' .search', () => {this.search = $(this.id+' .search').val(); this.listController();});
+    $(document).on('click', this.id+' #collapse_btn', () => {this.saveDisplay(); this.listController();});
+
     $(document).on('click', this.id+' .dsearch',() => {this.search = ''; this.listController();});
     $(document).on('click', this.id+' .uporder',() => {this.order = {};             this.listController();});
     $(document).on('click', this.id+' .doorder',() => {this.order = {title: false}; this.listController();});
@@ -187,4 +219,36 @@ function TaskVC(name = "Task", id = "#tasks") {
 let task_vc = new TaskVC();
 let task_vch = new TaskVC('Home task', '#home_tasks');
 let task_vcu = new TaskVC('Univerity task', '#uni_tasks');
+
+let cookieDisplay = {
+  '#task_vc'  : 'show',
+  '#task_vch' : 'show',
+  '#task_vcu' : 'show',
+}
+let cookieDisplayMini =  {
+  '#task_vc'  : '',
+  '#task_vch' : '',
+  '#task_vcu' : '',
+}
+
+$(window).resize(function() {
+  // Aquí va el codi que vols que s'executi cada vegada que canviem la mida de la finestra del nostre navegador
+  let amplada = $(window).width() // Funció que retorna l'amplada actual de la finestra del nostre navegador
+  if (amplada < 768){
+    if (task_vc.displayMini == false){
+      console.log("Changing display")
+      task_vc.changeDisplay();
+      task_vch.changeDisplay();
+      task_vcu.changeDisplay();
+    }              
+  }else{
+    if (task_vc.displayMini == true){
+      task_vc.changeDisplay();
+      task_vch.changeDisplay();
+      task_vcu.changeDisplay();
+    }   
+  }
+});
+
+
 });
