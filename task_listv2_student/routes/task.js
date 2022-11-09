@@ -69,16 +69,20 @@ router.post('/update/(:id)', function(req, res, next) {
 
 // Switch task
 router.get('/switch/(:id)', function(req, res, next) {
-
+  task_model.update(req.params.id, req.body.title, !req.body.done);
+  res.redirect('/task');
 });
  
 // Delete task
 router.get('/delete/(:id)', function(req, res, next) {
-
+  task_model.delete(req.params.id);
+  res.redirect('/task');
 });
 
 // Reset all tasks
 router.get('/reset', function(req, res, next) {
+  task_model.reset();
+  res.redirect('/task');
 
 });
 

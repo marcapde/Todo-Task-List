@@ -30,15 +30,17 @@ function TaskC(name = "Task", id = "#tasks") {
   };
 
   TaskC.prototype.switchController = function(id) {
-    window.location
+    window.location.href = window.location.pathname + '/switch/' + id;
   };
 
   TaskC.prototype.deleteController = function(id, title) {
     //if (confirm(`Delete: ${title}`))
+    window.location.href = window.location.pathname + '/delete/' + id;
 
   };
 
   TaskC.prototype.resetController = function() {
+    window.location.href = window.location.pathname + '/reset' ;
 
   };
 
