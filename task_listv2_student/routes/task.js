@@ -69,7 +69,9 @@ router.post('/update/(:id)', function(req, res, next) {
 
 // Switch task
 router.get('/switch/(:id)', function(req, res, next) {
-  task_model.update(req.params.id, req.body.title, !req.body.done);
+  let task = task_model.get(req.params.id);
+  //console.log('Switch task', task.title, " + ",req.body.done);
+  task_model.update(req.params.id, task.title, task.done);
   res.redirect('/task');
 });
  

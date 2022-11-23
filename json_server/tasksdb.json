@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Maria Albet",
+      "status": 7.5,
+      "birth_date": "1998-11-03"
+    },
+    {
+      "id": 2,
+      "name": "Joan Coixet",
+      "status": 6.3,
+      "birth_date": "2001-04-07"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "title": "PMUD exercise",
+      "done": false,
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "title": "PMUD conference",
+      "done": true,
+      "userId": 1
+    },
+    {
+      "id": 3,
+      "title": "PMUD practice",
+      "done": false,
+      "userId": 2
+    },
+    [
+      "HOLA",
+      false
+    ]
+  ],
+  "profile": [
+    "HOLA",
+    false
+  ]
+}
